@@ -59,6 +59,7 @@ server <- function(input, output) {
             geom_line(size = 0.5) +
             geom_area(fill = "darkgreen", alpha = 0.4) +
             theme_minimal() +
+            scale_y_continuous(limits = c(-100, 100)) +
             labs(x = "Date", y = "Percent Change from Baseline",
                  title = paste(names(which(choices == input$indicator)),
                                "Mobility in", input$council_area))
