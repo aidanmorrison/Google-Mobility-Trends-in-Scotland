@@ -1,43 +1,36 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(lubridate)
 library(tidyverse)
+library(shinydashboard)
 
 indicators_lkp <- read.csv("/cloud/project/Data/Indicator Lookup.csv")
 la_lkp <- read.csv("/cloud/project/Data/Scottish Local Authorities.csv")
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
-
+ui <- dashboardPage( 
     # Application title
-    titlePanel("Google Mobility Trends Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
+    dashboardHeader(title = "Google Mobility Trends Data"),
+    dashboardSidebar(),
+    dashboardBody(
+        
+        tags$head(tags$style(type = 'text/css',".shiny-input-panel{background-color: white !important;}")),
+    # User Inputs
+        inputPanel(
             selectInput("council_area", "Scottish Council Area",
                         choices = c(la_lkp$la, "Scotland"),
                         multiple = FALSE, selected = "Scotland"),
             selectInput("indicator", "Select Indicator",
                         choices = setNames(indicators_lkp$variable_name,
                                            indicators_lkp$formatted),
-                        multiple = FALSE)
+                        multiple = FALSE),
+            radioButtons("chart_type", "Chart Type", choices = "Time Series")
         ),
+        hr(),
 
         # Show a plot of the generated distribution
-        mainPanel(
            plotOutput("Plot")
         )
     )
-)
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
