@@ -17,7 +17,7 @@ ui <- dashboardPage(
     # User Inputs
         inputPanel(
             selectInput("council_area", "Scottish Council Area",
-                        choices = c(la_lkp$la, "Scotland"),
+                        choices = c("Scotland", la_lkp$la),
                         multiple = FALSE, selected = "Scotland"),
             selectInput("indicator", "Select Indicator",
                         choices = setNames(indicators_lkp$variable_name,
@@ -38,7 +38,8 @@ server <- function(input, output) {
     
     # Get data
     gmr <- reactive({
-        choices <- indicators_lkp$variable_name
+        choices <- setNames(indicators_lkp$variable_name,
+                            indicators_lkp$formatted)
         read.csv("/cloud/project/Data/Global Mobility Report - Scotland.csv") %>%
             filter(sub_region_1 == input$council_area) %>%
             select(sub_region_1, date, as.numeric(which(choices == input$indicator)+8)) %>%
@@ -48,6 +49,8 @@ server <- function(input, output) {
 
     output$Plot <- renderPlot({
         
+        choices <- setNames(indicators_lkp$variable_name,
+                            indicators_lkp$formatted)
         ggplot(gmr(), aes(x = date, y = value)) +
             geom_line(size = 0.5) +
             geom_area(fill = "darkgreen", alpha = 0.4) +
