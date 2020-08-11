@@ -15,8 +15,8 @@ la_lookup <- read.csv("Data/Scottish Local Authorities.csv")
 data <- read.csv(gmr_link) %>% filter(sub_region_1 %in% la_lookup$la)
 
 # aggregate
-data<- rbind(cbind((as_tibble(matrix(nrow = 162, ncol = 7)) %>% setNames(names(data)[1:7])), 
-      (data %>% group_by(date) %>%
+data<- rbind(cbind((as_tibble(matrix(nrow = 172, ncol = 7)) %>% setNames(names(data)[1:7])), 
+      (data %>% group_by(date, .drop = FALSE) %>%
          summarise_at(.vars = vars(retail_and_recreation_percent_change_from_baseline:residential_percent_change_from_baseline), 
                       .funs = funs(mean(.,na.rm = TRUE))))), data) %>%
   mutate(sub_region_1 = replace_na(sub_region_1, "Scotland"))
